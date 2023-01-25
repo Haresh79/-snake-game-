@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>snaky game by haresh</title>
+<style type="text/css">
+*{
+padding:0;
+margin:0;
+}
+.body{
+background:url("20230124_072905.jpg");
+min-height:100vh;
+background-size:100vh 100vw;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+#board{
+   background:linear-gradient(#ccc19b,#f5eed7,#ccc19b);
+   width:90vmin;
+   height:92vmin;
+   border:5px solid #361918;
+   box-shadow:4px 6px 10px black;
+   display:grid;
+   grid-template-columns:repeat(18,1fr);
+   grid-template-rows:repeat(18,1fr);
+}
+#scoreBox{
+	position:absolute;
+	top:15vh; left:10vw;
+	font-size: 20px; font-weight:bold;
+	color:white;
+}
+.buttons{
+    margin-top:30px; margin-left:18px;
+	display:flex; flex-direction:column;
+	align-items:center; justify-content:center;
+	width:330px; height:80px;
+}
+#top{margin-top:0;  }
+#down{margin-bottom:0;}
+#left{position:relative; left:-20vw; top:15px;}
+#right{position:relative; right:-20vw; top:-10px;}
+.btn{
+    width:80px; height:100px;
+    padding:8px;
+    color:white; background-color:#173d38;
+    border:none; border-radius:10px;
+    box-shadow:1px 1px 2px #1aeb97;
+}
+
+
+.head{
+	background-color:#17ad3f;
+	border-radius:3px;
+
+}
+.snake{
+	background-color:#25e81e;
+	border-radius:3px;
+}
+.food{
+	background-color:red;
+	border:none;
+	border-radius:10px;
+}
+</style>
+</head>
+<body>
+<div class="body">
+	<div id="scoreBox">SCORE : 0</div>
+    <span> <div id="board"></div>
+  
+<div class="buttons">
+  <button class="btn" id="top" onclick="moveup()">U</button>
+  <button class="btn" id="left" onclick="moveleft()">L</button>
+  <button class="btn" id="right" onclick="moveright()">R</button>
+  <button class="btn" id="down" onclick="movedown()">D</button>
+  </div></span>
+</div>
+<script type="text/javascript">
+//constant variables
+let inputDir={x:0, y:0};
+const foodSound=new Audio('/storage/emulated/0/snake game/Tennis.ogg');
+const gameOverSound=new Audio('/storage/emulated/0/snake game/Shrink Ray.ogg');
+let lastPaintTime=0;
+let speed=4;
+let snakearr=[
+		{x:12,y:15}
+	]
+food={x:5,y:8};
+let score;
+//let up=document.getElementById('top');
+//let down=document.getElementById('down');
+//let left=document.getElementById('left');
+//let right=document.getElementById('right');
+
+
+//main functions
+function main(ctime){
+	window.requestAnimationFrame(main);
+	//console.log(ctime);
+	if((ctime - lastPaintTime)/1000 < 1/speed){
+		return;
+	}
+	lastPaintTime=ctime;
+	gameEngine();
+}
+function isCollide(snake){
+	//if snake collide with her body
+	for(let i=1; i<snakearr.length; i++){
+		if(snake[i].x===snake[0].x && snake[i].y===snake[0].y){
+			return true;
+		}
+		
+	}
+	//if snake cillide with walls
+	if(snake[0].x>=18 || snake[0].x<=0 || snake[0].y>=18 || snake[0].y<=0){
+		return true;
+	}
+}
+function gameEngine(){
+		//part 1: updatting snake array&food
+		if(isCollide(snakearr)){
+			gameOverSound.play();
+			inputDir={x:0, y:0};
+			alert("G A M E  O V E R");
+			snakearr=[{x:12, y:15}];
+			score=0;
+			}
+		//if you have eaten the food
+		if(snakearr[0].y==food.y && snakearr[0].x==food.x){
+			foodSound.play();
+			score=score+1;
+			scoreBox.innerHTML="score"+score;
+			snakearr.unshift({x: snakearr[0].x+ inputDir.x, y:snakearr[0].y+ inputDir.y})
+			let a=5;
+			let b=15;
+			food={x:Math.round(a+(b-a)*Math.random()), y:Math.round(a+(b-a)*Math.random())}
+		}
+		// Moving the snake
+		for(let i=snakearr.length - 2;i>=0; i--){
+
+			snakearr[i+1]={...snakearr[i]};
+		}
+		snakearr[0].x+= inputDir.x;
+		snakearr[0].y+= inputDir.y;
+		//part 2: display the snake & food
+		//display snake
+		board.innerHTML="";
+		snakearr.forEach((e, index)=>{
+				snakeElement = document.createElement('div');
+				snakeElement.style.gridRowStart=e.y;
+				snakeElement.style.gridColumnStart=e.x;
+				
+				if(index==0){
+					snakeElement.classList.add('head');
+				}
+				else{
+					snakeElement.classList.add('snake');
+				}
+				board.appendChild(snakeElement);
+			});
+		//display food
+		snakearr.forEach((e, index)=>{
+		foodElement = document.createElement('div');
+		foodElement.style.gridRowStart=food.y;
+		foodElement.style.gridColumnStart=food.x;
+		foodElement.classList.add('food');
+		board.appendChild(foodElement);
+		});
+	}
+
+//main logic start from here
+window.requestAnimationFrame(main);
+window.addEventListener('keydown', e=>{
+	inputDir={x:0,y:1};//start the game
+	switch(e.key){
+		case "ArrowUp":
+			inputDir.x=0;
+			inputDir.y=-1;
+    	   break;
+			
+		case "ArrowDown":
+			inputDir.x=0;
+			inputDir.y=1;
+	       break;
+			
+	    case "ArrowLeft":
+			inputDir.x=-1;
+			inputDir.y=0;
+		   break;
+		case "ArrowRight":
+			inputDir.x=1;
+			inputDir.y=0;
+		   break;
+			
+		default:
+		   break;	}
+	
+});
+
+var up= document.getElementById('top');
+var down= document.getElementById('down');
+var left= document.getElementById('left');
+var right= document.getElementById('right');
+
+up.addEventListener("click",moveup);
+function moveup(){
+     inputDir.x=0;
+     inputDir.y=-1;
+}
+down.addEventListener("click",movedown);
+function movedown(){
+     inputDir.x=0;
+     inputDir.y=1;
+}
+left.addEventListener("click",moveleft);
+function moveleft(){
+     inputDir.x=-1;
+     inputDir.y=0;
+}
+right.addEventListener("click",moveright);
+function moveright(){
+     inputDir.x=1;
+     inputDir.y=0;
+}
+</script>
+</body>
+</html>
