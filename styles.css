@@ -1,0 +1,61 @@
+*{
+padding:0;
+margin:0;
+}
+.body{
+background:url("/storage/emulated/0/snake game/20230124_072905.jpg");
+min-height:100vh;
+background-size:100vh 100vw;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+#board{
+   background:linear-gradient(#ccc19b,#f5eed7,#ccc19b);
+   width:90vmin;
+   height:92vmin;
+   border:5px solid #361918;
+   box-shadow:4px 6px 10px black;
+   display:grid;
+   grid-template-columns:repeat(18,1fr);
+   grid-template-rows:repeat(18,1fr);
+}
+#scoreBox{
+	position:absolute;
+	top:15vh; left:10vw;
+	font-size: 20px; font-weight:bold;
+	color:white;
+}
+.buttons{
+    margin-top:30px; margin-left:18px;
+	display:flex; flex-direction:column;
+	align-items:center; justify-content:center;
+	width:330px; height:80px;
+}
+#top{margin-top:0;  }
+#down{margin-bottom:0;}
+#left{position:relative; left:-20vw; top:15px;}
+#right{position:relative; right:-20vw; top:-10px;}
+.btn{
+    width:80px; height:100px;
+    padding:8px;
+    color:white; background-color:#173d38;
+    border:none; border-radius:10px;
+    box-shadow:1px 1px 2px #1aeb97;
+}
+
+
+.head{
+	background-color:#17ad3f;
+	border-radius:3px;
+
+}
+.snake{
+	background-color:#25e81e;
+	border-radius:3px;
+}
+.food{
+	background-color:red;
+	border:none;
+	border-radius:10px;
+}
